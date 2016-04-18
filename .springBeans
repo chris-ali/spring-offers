@@ -11,6 +11,7 @@
 		<config>src/com/chrisali/spring/web/container/dao-context.xml</config>
 		<config>src/com/chrisali/spring/web/container/service-context.xml</config>
 		<config>src/com/chrisali/spring/web/container/security-context.xml</config>
+		<config>test/com/chrisali/spring/web/test/config/datasource.xml</config>
 	</configs>
 	<autoconfigs>
 	</autoconfigs>

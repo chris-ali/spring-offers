@@ -48,6 +48,7 @@ p.error {
 .offers {
 	padding: 10px;
 	border: 1px solid gray;
+	width: 800px;
 }
 
 div.header {
