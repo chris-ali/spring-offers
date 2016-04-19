@@ -1,6 +1,7 @@
 package com.chrisali.spring.web.test.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -31,6 +32,9 @@ public class OffersDaoTests {
 	private OffersDao offersDao;
 	
 	@Autowired
+	private UserDao userDao;
+	
+	@Autowired
 	private DataSource dataSource;
 	
 	@Before
@@ -39,33 +43,52 @@ public class OffersDaoTests {
 		
 		jdbc.execute("delete from offers");
 		jdbc.execute("delete from users");
-		jdbc.execute("delete from authorities");
 	}
 	
 	@Test
-	public void testCreateUser() {
-		Offer offer = new Offer("Chris", "chris@test.com", "A test text string for JUnit test.");
+	public void testOffers() {
+		// Create user for offer
+		User user = new User("chris", "test1", "chris@test.com", true, "ROOT_USER", "Chris Ali");
+		assertTrue("User creation should return true", userDao.create(user));
+		
+		// Create single offer
+		Offer offer = new Offer("A test text string for a JUnit test.", user);
 		assertTrue("Offer creation should return true", offersDao.create(offer));
 		
-		List<Offer> offers = offersDao.getOffers();
+		List<Offer> singleOffer = offersDao.getOffers();
 		
-		assertEquals("Only one offer in list", 1, offers.size());
+		assertEquals("Only one offer in list", 1, singleOffer.size());
 		
-		assertEquals("Created offer should be identical to retreived offer", offer, offers.get(0));
+		assertEquals("Created offer should be identical to retreived offer", offer, singleOffer.get(0));
 		
-		offer = offers.get(0);
-		offer.setText("An updated test text string for JUnit test.");
+		// Retrieve offer by ID
+		offer = singleOffer.get(0);
+		offer.setText("An updated test text string for a JUnit test.");
 		
 		assertTrue("Offer update should return true", offersDao.update(offer));
 		
+		// Update offer
 		Offer updated = offersDao.getOffer(offer.getId());
-		
 		assertEquals("Updated offer should match retreived offer", offer, updated);
 		
+		// Create second offer
+		Offer offer2 = new Offer("Second test offer for a JUnit test.", user);
+		assertTrue("Offer creation should return true", offersDao.create(offer2));
+		
+		// Retrieve offers by username
+		List<Offer> multipleOffers = offersDao.getOffers();
+		assertEquals("The number of offers for this username should be 2", 2, multipleOffers.size());
+		
+		// Test multiple offer IDs
+		for (Offer currentOffer : multipleOffers) {
+			Offer retrievedOffer = offersDao.getOffer(currentOffer.getId());
+			
+			assertEquals("Offer retreived by ID should match offer in list", currentOffer, retrievedOffer);
+		}
+		
+		// Delete offer
 		offersDao.delete(offer.getId());
-		
-		List<Offer> empty = offersDao.getOffers();
-		
-		assertEquals("Offers list should be empty", 0, empty.size());
+		List<Offer> oneDeleted = offersDao.getOffers();
+		assertEquals("Offers list should have one offer left", 1, oneDeleted.size());
 	}
 }

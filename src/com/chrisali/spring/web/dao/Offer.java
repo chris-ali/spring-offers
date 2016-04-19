@@ -1,36 +1,28 @@
 package com.chrisali.spring.web.dao;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import com.chrisali.spring.web.validation.ValidEmail;
 
 public class Offer {
 	private int id;
 	
-	@Size(min=5, max=100, message="Name must be between 5 and 100 characters")
-	private String name;
-	
-	@NotNull
-	@ValidEmail(min=6, message="This email address is not valid")
-	private String email;
-	
+	private User user;
+
 	@Size(min=20, max=255, message="Text must be between 20 and 255 characters")
 	private String text;
 
-	public Offer() {}
+	public Offer() {
+		this.user = new User();
+	}
 	
-	public Offer(String name, String email, String text) {
-		this.name = name;
-		this.email = email;
+	public Offer(String text, User user) {
 		this.text = text;
+		this.user = user;
 	}
 
-	public Offer(int id, String name, String email, String text) {
+	public Offer(int id, String text, User user) {
 		this.id = id;
-		this.name = name;
-		this.email = email;
 		this.text = text;
+		this.user = user;
 	}
 
 	public int getId() {
@@ -40,23 +32,7 @@ public class Offer {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public String getEmail() {
-		return email;
-	}
-	
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	
+
 	public String getText() {
 		return text;
 	}
@@ -65,18 +41,29 @@ public class Offer {
 		this.text = text;
 	}
 	
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
+	public String getUsername() {
+		return user.getUsername();
+	}
+
 	@Override
 	public String toString() {
-		return "Offer [id=" + id + ", name=" + name + ", email=" + email + ", text=" + text + "]";
+		return "Offer [id=" + id + ", user=" + user + ", text=" + text + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((email == null) ? 0 : email.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((text == null) ? 0 : text.hashCode());
+		result = prime * result + ((user == null) ? 0 : user.hashCode());
 		return result;
 	}
 
@@ -89,21 +76,17 @@ public class Offer {
 		if (getClass() != obj.getClass())
 			return false;
 		Offer other = (Offer) obj;
-		if (email == null) {
-			if (other.email != null)
-				return false;
-		} else if (!email.equals(other.email))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
 		if (text == null) {
 			if (other.text != null)
 				return false;
 		} else if (!text.equals(other.text))
 			return false;
+		if (user == null) {
+			if (other.user != null)
+				return false;
+		} else if (!user.equals(other.user))
+			return false;
 		return true;
 	}
+	
 }

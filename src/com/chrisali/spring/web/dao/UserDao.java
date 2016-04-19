@@ -38,10 +38,9 @@ public class UserDao {
 		params.addValue("email", user.getEmail());
 		params.addValue("enabled", user.isEnabled());
 		params.addValue("authority", user.getAuthority());
-		
-		jdbc.update("insert into users (username, password, email, enabled) values (:username, :password, :email, :enabled)", params);
-		
-		return jdbc.update("insert into authorities (username, authority) values (:username, :authority)", params) == 1;
+		params.addValue("name", user.getName());
+
+		return jdbc.update("insert into users (username, password, email, enabled, authority, name) values (:username, :password, :email, :enabled, :authority, :name)", params) == 1;
 	}
 	
 	public User getUser(String username) {
@@ -52,14 +51,23 @@ public class UserDao {
 			public User mapRow(ResultSet rs, int rowNum) throws SQLException {
 				User user = new User();
 				
-				user.setUsername(rs.getString("name"));
+				user.setUsername(rs.getString("username"));
 				user.setPassword(rs.getString("password"));
 				user.setEmail(rs.getString("email"));
 				user.setEnabled(rs.getBoolean("enabled"));
+				user.setAuthority(rs.getString("authority"));
+				user.setName(rs.getString("name"));
 				
 				return user;
 			}
 		});
+	}
+	
+	public boolean delete(String username) {
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("username", username);
+		
+		return jdbc.update("delete from users, offers where username=:username", params) == 1;
 	}
 
 	public boolean exists(String username) {
@@ -70,7 +78,7 @@ public class UserDao {
 	}
 
 	public List<User> getAllUsers() {
-			return jdbc.query("select * from users, authorities where users.username=authorities.username", BeanPropertyRowMapper.newInstance(User.class));
+			return jdbc.query("select * from users", BeanPropertyRowMapper.newInstance(User.class));
 	}
 	
 }

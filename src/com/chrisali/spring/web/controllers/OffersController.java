@@ -1,5 +1,6 @@
 package com.chrisali.spring.web.controllers;
 
+import java.security.Principal;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -40,11 +41,13 @@ public class OffersController {
 	}
 	
 	@RequestMapping(value="/docreateoffer", method=RequestMethod.POST)
-	public String doCreateOffer(@Valid Offer offer, BindingResult result) {
+	public String doCreateOffer(@Valid Offer offer, BindingResult result, Principal principal) {
 		
 		if(result.hasErrors())
 			return "createoffer";
 		
+		String username = principal.getName();
+		offer.getUser().setUsername(username);
 		offersService.create(offer);
 		
 		return "offercreated";

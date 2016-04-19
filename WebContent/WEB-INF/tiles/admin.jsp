@@ -9,6 +9,7 @@
 <table class="formtable">
 	<tr>
 		<td>Username</td>
+		<td>Name</td>
 		<td>Email</td>
 		<td>Role</td>
 		<td>Enabled</td>
@@ -16,6 +17,7 @@
 	<c:forEach var="user" items="${users}">
 		<tr>
 			<td>${user.username}</td>
+			<td>${user.name}</td>
 			<td>${user.email}</td>
 			<td>${user.authority}</td>
 			<td>${user.enabled}</td>

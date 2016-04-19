@@ -1,6 +1,7 @@
 package com.chrisali.spring.web.test.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -37,12 +38,11 @@ public class UserDaoTests {
 		
 		jdbc.execute("delete from offers");
 		jdbc.execute("delete from users");
-		jdbc.execute("delete from authorities");
 	}
 	
 	@Test
-	public void testCreateUser() {
-		User user = new User("chris", "test1", "chris@test.com", true, "ROOT_USER");
+	public void testUsers() {
+		User user = new User("chris", "test1", "chris@test.com", true, "ROOT_USER", "Chris Ali");
 		assertTrue("User creation should return true", userDao.create(user));
 		
 		List<User> users = userDao.getAllUsers();
@@ -51,5 +51,7 @@ public class UserDaoTests {
 		assertTrue("User should exist in database", userDao.exists(user.getUsername()));
 		
 		assertEquals("Created user should be identical to retreived user", user, users.get(0));
+		
+		//List<User> empty = userDao.getAllUsers();
 	}
 }
