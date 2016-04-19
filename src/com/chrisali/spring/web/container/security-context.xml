@@ -20,6 +20,7 @@
 		<security:intercept-url pattern="/docreateoffer" access="isAuthenticated()" />
 		<security:intercept-url pattern="/createoffer" access="isAuthenticated()" />
 		<security:intercept-url pattern="/offercreated" access="isAuthenticated()" />
+		<security:intercept-url pattern="/offerdeleted" access="isAuthenticated()" />
 		<security:intercept-url pattern="/" access="permitAll" />
 		<security:intercept-url pattern="/accessdenied" access="permitAll" />
 		<security:intercept-url pattern="/createaccount" access="permitAll" />

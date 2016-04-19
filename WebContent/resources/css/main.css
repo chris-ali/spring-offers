@@ -22,10 +22,16 @@ textarea {
 .label {
 	text-align: right;
 	vertical-align: top;
+	width: 80px;
 }
 
 .control {
 	margin-left: 10px;
+}
+
+input.delete {
+	border: 1px solid red;
+	color: red;
 }
 
 .error {

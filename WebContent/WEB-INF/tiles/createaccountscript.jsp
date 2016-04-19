@@ -17,7 +17,7 @@
 		var repeat = $("#repeat").val();
 		
 		if (password != repeat){
-			alert("Passwords do not match")
+			alert("<fmt:message key='UnmatchedPasswords.user.password'/>")
 			return false;
 		} else {
 			return true;

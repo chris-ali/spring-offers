@@ -43,6 +43,7 @@
     </definition>
             
     <definition name="createoffer" extends="offers.base">
+    	<put-attribute name="includes" value="/WEB-INF/tiles/createofferscript.jsp"></put-attribute>
 		<put-attribute name="title" value="Create an Offer"></put-attribute>
 		<put-attribute name="body" value="/WEB-INF/tiles/createoffer.jsp"></put-attribute>
     </definition>
@@ -50,6 +51,11 @@
     <definition name="offercreated" extends="offers.base">
 		<put-attribute name="title" value="Offer Created"></put-attribute>
 		<put-attribute name="body" value="/WEB-INF/tiles/offercreated.jsp"></put-attribute>
+    </definition>
+    
+    <definition name="offerdeleted" extends="offers.base">
+		<put-attribute name="title" value="Offer Deleted"></put-attribute>
+		<put-attribute name="body" value="/WEB-INF/tiles/offerdeleted.jsp"></put-attribute>
     </definition>
     
     <definition name="admin" extends="offers.base">

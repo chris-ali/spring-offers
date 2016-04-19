@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.chrisali.spring.web.dao.Offer;
 import com.chrisali.spring.web.service.OffersService;
@@ -34,22 +35,36 @@ public class OffersController {
 	}
 	
 	@RequestMapping("/createoffer")
-	public String createOffer(Model model) {
-		model.addAttribute("offer",new Offer());
+	public String createOffer(Model model, Principal principal) {
+		Offer offer = null;
+		
+		if (principal != null) {
+			String username = principal.getName();
+			offer = offersService.getOffer(username);
+		}
+		
+		if (offer == null)
+			offer = new Offer();
+		
+		model.addAttribute("offer", offer);
 		
 		return "createoffer";
 	}
 	
 	@RequestMapping(value="/docreateoffer", method=RequestMethod.POST)
-	public String doCreateOffer(@Valid Offer offer, BindingResult result, Principal principal) {
+	public String doCreateOffer(@Valid Offer offer, BindingResult result, Principal principal, @RequestParam(value="delete", required=false) String delete) {
 		
-		if(result.hasErrors())
+		if (result.hasErrors())
 			return "createoffer";
 		
-		String username = principal.getName();
-		offer.getUser().setUsername(username);
-		offersService.create(offer);
-		
-		return "offercreated";
+		if (delete == null) {
+			String username = principal.getName();
+			offer.getUser().setUsername(username);
+			offersService.createOrUpdate(offer);
+			return "offercreated";
+		} else {
+			offersService.delete(offer.getId());
+			return "offerdeleted";
+		}
 	}
 }
