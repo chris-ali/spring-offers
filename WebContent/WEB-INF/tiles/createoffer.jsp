@@ -7,8 +7,11 @@
 	<sf:input type="hidden" name="id" path="id"/>
 	<table class="formtable">
 		<tr>
-			<td class="label">Enter Offer:</td>
-			<td><sf:textarea class="control" path="text" name="text" rows="20" cols="15"></sf:textarea><br>
+			<c:choose>
+				<c:when test="${edit}"><td class="label">Edit Offer:</td></c:when>
+				<c:otherwise><td class="label">Enter Offer:</td></c:otherwise>
+			</c:choose>
+			<td><sf:textarea class="control" path="text" name="text" rows="10" cols="10"></sf:textarea>
 			<sf:errors path="text" cssClass="error"></sf:errors></td>
 		</tr>
 		<tr>

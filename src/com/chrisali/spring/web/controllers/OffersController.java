@@ -41,10 +41,13 @@ public class OffersController {
 		if (principal != null) {
 			String username = principal.getName();
 			offer = offersService.getOffer(username);
+			model.addAttribute("edit", true);
 		}
 		
-		if (offer == null)
+		if (offer == null) {
 			offer = new Offer();
+			model.addAttribute("edit", false);
+		}
 		
 		model.addAttribute("offer", offer);
 		

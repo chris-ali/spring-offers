@@ -1,7 +1,7 @@
 @CHARSET "ISO-8859-1";
 
 .formtable {
-	width: 420px;
+	width: 440px;
 	padding: 10px;
 	border: 1px solid blue;
 }
@@ -22,7 +22,6 @@ textarea {
 .label {
 	text-align: right;
 	vertical-align: top;
-	width: 80px;
 }
 
 .control {

@@ -43,7 +43,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/docreateaccount", method=RequestMethod.POST)
-	public String doCreateAccount(@Valid User user, BindingResult result) {
+	public String doCreateAccount(@Valid User user, BindingResult result, Model model) {
 		if(result.hasErrors())
 			return "createaccount";
 		
@@ -61,6 +61,8 @@ public class UserController {
 			result.rejectValue("username", "DuplicateKey.user.username");
 			return "createaccount";
 		}
+		
+		model.addAttribute("user", user);
 		
 		return "accountcreated";
 	}
