@@ -51,6 +51,11 @@ public class OffersDaoTests {
 		User user = new User("chris", "test1", "chris@test.com", true, "ROOT_USER", "Chris Ali");
 		userDao.create(user);
 		
+		List<User> users = userDao.getAllUsers();
+		
+		assertEquals("Only one user in list", 1, users.size());
+		assertTrue("User should exist in database", userDao.exists(user.getUsername()));
+		
 		// Create single offer
 		Offer offer = new Offer("A test text string for a JUnit test.", user);
 		assertTrue("Offer creation should return true", offersDao.create(offer));

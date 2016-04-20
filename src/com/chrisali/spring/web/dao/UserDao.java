@@ -9,8 +9,8 @@ import javax.sql.DataSource;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -39,7 +39,18 @@ public class UserDao {
 
 	@Transactional
 	public void create(User user) {
-		getSession().save(user);
+		Transaction tx = null;
+		Session session = sessionFactory.openSession();
+		try {
+			tx = session.beginTransaction();
+			user.setPassword(passwordEncoder.encode(user.getPassword()));
+			session.save(user);
+			tx.commit();
+		} catch (Exception e) {
+			if (tx != null)	tx.rollback();
+		} finally {
+			session.close();
+		}
 	}
 	
 	public User getUser(String username) {
@@ -79,7 +90,6 @@ public class UserDao {
 	@SuppressWarnings("unchecked")
 	public List<User> getAllUsers() {
 		return getSession().createQuery("from User").list();
-		//return jdbc.query("select * from users", BeanPropertyRowMapper.newInstance(User.class));
 	}
 	
 	public Session getSession() {

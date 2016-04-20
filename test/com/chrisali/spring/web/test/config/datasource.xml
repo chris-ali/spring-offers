@@ -21,12 +21,14 @@
 			<property name="password" value="${jdbc.password}"></property>
 		</bean>
 		
-		<bean id="sessionFactory"
-			class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 			<property name="dataSource" ref="dataSource"></property>
 			<property name="hibernateProperties">
 				<props>
 					<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+					<prop key="javax.persistence.validation.group.pre-persist">com.chrisali.spring.web.dao.PersistenceValidationGroup</prop>
+					<prop key="javax.persistence.validation.group.pre-update">com.chrisali.spring.web.dao.PersistenceValidationGroup</prop>
+					<prop key="javax.persistence.validation.group.pre-remove">com.chrisali.spring.web.dao.PersistenceValidationGroup</prop>
 				</props>
 			</property>
 			<property name="packagesToScan">

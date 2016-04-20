@@ -1,6 +1,5 @@
 package com.chrisali.spring.web.dao;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -14,27 +13,27 @@ import com.chrisali.spring.web.validation.ValidEmail;
 @Entity
 @Table(name="users")
 public class User {
-	@NotBlank
-	@Size(min=5, max=45)
-	@Pattern(regexp="^\\w{5,}$")
+	@NotBlank(groups={PersistenceValidationGroup.class, FormValidationGroup.class})
+	@Size(min=5, max=45, groups={PersistenceValidationGroup.class, FormValidationGroup.class})
+	@Pattern(regexp="^\\w{5,}$", groups={PersistenceValidationGroup.class, FormValidationGroup.class})
 	@Id
-	@Column(name="username") //Only if name is different from db col name
+	//@Column(name="username") //Only if name is different from db col name
 	private String username;
 	
-	@NotBlank
-	@Pattern(regexp="^\\S+$")
-	@Size(min=5, max=20)
+	@NotBlank(groups={PersistenceValidationGroup.class, FormValidationGroup.class})
+	@Pattern(regexp="^\\S+$", groups={PersistenceValidationGroup.class, FormValidationGroup.class})
+	@Size(min=5, max=20, groups={FormValidationGroup.class})
 	private String password;
 
-	@ValidEmail(min=6)
+	@ValidEmail(min=6, groups={PersistenceValidationGroup.class, FormValidationGroup.class})
 	private String email;
 	
 	private boolean enabled = false;
 	
 	private String authority;
 	
-	@NotBlank
-	@Size(min=5, max=60)
+	@NotBlank(groups={PersistenceValidationGroup.class, FormValidationGroup.class})
+	@Size(min=5, max=60, groups={PersistenceValidationGroup.class, FormValidationGroup.class})
 	private String name;
 	
 	public User() {}

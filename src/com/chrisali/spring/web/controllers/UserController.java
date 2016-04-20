@@ -9,9 +9,11 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.chrisali.spring.web.dao.FormValidationGroup;
 import com.chrisali.spring.web.dao.User;
 import com.chrisali.spring.web.service.UserService;
 
@@ -43,7 +45,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/docreateaccount", method=RequestMethod.POST)
-	public String doCreateAccount(@Valid User user, BindingResult result, Model model) {
+	public String doCreateAccount(@Validated(FormValidationGroup.class) User user, BindingResult result, Model model) {
 		if(result.hasErrors())
 			return "createaccount";
 		

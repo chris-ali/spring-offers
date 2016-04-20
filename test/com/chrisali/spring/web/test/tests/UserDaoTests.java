@@ -32,6 +32,15 @@ public class UserDaoTests {
 	@Autowired
 	private DataSource dataSource;
 	
+	private User user1 = new User("johnwpurcell", "hellothere", "john@caveofprogramming.com", 
+									true, "ROLE_USER", "John Purcell");
+	private User user2 = new User("richardhannay", "the39steps", "richard@caveofprogramming.com", 
+									true, "ROLE_ADMIN", "Richard Hannay");
+	private User user3 = new User("suetheviolinist", "iloveviolins", "sue@caveofprogramming.com", 
+									true, "ROLE_USER", "Sue Black");
+	private User user4 = new User("rogerblake", "liberator", "rog@caveofprogramming.com", 
+									false, "user", "Rog Blake");
+	
 	@Before
 	public void init() {
 		JdbcTemplate jdbc = new JdbcTemplate(dataSource);
@@ -40,6 +49,25 @@ public class UserDaoTests {
 		jdbc.execute("delete from users");
 	}
 	
+	@Test
+	public void testCreateRetrieve() {
+		userDao.create(user1);
+		
+		List<User> users1 = userDao.getAllUsers();
+		
+		assertEquals("One user should be created and retrieved", 1, users1.size());
+		assertEquals("Inserted user should match retrieved", user1, users1.get(0));
+		
+		userDao.create(user2);
+		userDao.create(user3);
+		userDao.create(user4);
+		
+		List<User> users2 = userDao.getAllUsers();
+		
+		assertEquals("One user should be created and retrieved", 4, users2.size());
+	}
+	
+	// TODO reimplement
 	@Test
 	public void testUsers() {
 		User user = new User("chris", "test1", "chris@test.com", true, "ROOT_USER", "Chris Ali");
