@@ -43,7 +43,7 @@ public class UserDaoTests {
 	@Test
 	public void testUsers() {
 		User user = new User("chris", "test1", "chris@test.com", true, "ROOT_USER", "Chris Ali");
-		assertTrue("User creation should return true", userDao.create(user));
+		userDao.create(user);
 		
 		List<User> users = userDao.getAllUsers();
 		

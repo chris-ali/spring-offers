@@ -49,7 +49,7 @@ public class OffersDaoTests {
 	public void testOffers() {
 		// Create user for offer
 		User user = new User("chris", "test1", "chris@test.com", true, "ROOT_USER", "Chris Ali");
-		assertTrue("User creation should return true", userDao.create(user));
+		userDao.create(user);
 		
 		// Create single offer
 		Offer offer = new Offer("A test text string for a JUnit test.", user);

@@ -6,6 +6,9 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
@@ -15,10 +18,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Component("userDao")
 public class UserDao {
 	
 	private NamedParameterJdbcTemplate jdbc;
+	
+	@Autowired
+	private SessionFactory sessionFactory;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -31,16 +38,8 @@ public class UserDao {
 	}
 
 	@Transactional
-	public boolean create(User user) {
-		MapSqlParameterSource params = new MapSqlParameterSource();
-		params.addValue("username", user.getUsername());
-		params.addValue("password", passwordEncoder.encode(user.getPassword()));
-		params.addValue("email", user.getEmail());
-		params.addValue("enabled", user.isEnabled());
-		params.addValue("authority", user.getAuthority());
-		params.addValue("name", user.getName());
-
-		return jdbc.update("insert into users (username, password, email, enabled, authority, name) values (:username, :password, :email, :enabled, :authority, :name)", params) == 1;
+	public void create(User user) {
+		getSession().save(user);
 	}
 	
 	public User getUser(String username) {
@@ -77,8 +76,19 @@ public class UserDao {
 		return jdbc.queryForObject("select count(*) from users where username = :username", params, Integer.class) >= 1;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<User> getAllUsers() {
-			return jdbc.query("select * from users", BeanPropertyRowMapper.newInstance(User.class));
+		return getSession().createQuery("from User").list();
+		//return jdbc.query("select * from users", BeanPropertyRowMapper.newInstance(User.class));
+	}
+	
+	public Session getSession() {
+		Session session = null;
+		
+		try {session = sessionFactory.getCurrentSession();} 
+		catch (HibernateException e) {session = sessionFactory.openSession();}
+		
+		return session;
 	}
 	
 }
