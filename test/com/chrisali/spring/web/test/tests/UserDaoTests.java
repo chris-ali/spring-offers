@@ -1,6 +1,7 @@
 package com.chrisali.spring.web.test.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class UserDaoTests {
 	@Autowired
 	private DataSource dataSource;
 	
+	// Test Users
 	private User user1 = new User("johnwpurcell", "hellothere", "john@caveofprogramming.com", 
 									true, "ROLE_USER", "John Purcell");
 	private User user2 = new User("richardhannay", "the39steps", "richard@caveofprogramming.com", 
@@ -64,22 +66,17 @@ public class UserDaoTests {
 		
 		List<User> users2 = userDao.getAllUsers();
 		
-		assertEquals("One user should be created and retrieved", 4, users2.size());
+		assertEquals("Four users should be created and retrieved", 4, users2.size());
 	}
 	
-	// TODO reimplement
 	@Test
-	public void testUsers() {
-		User user = new User("chris", "test1", "chris@test.com", true, "ROOT_USER", "Chris Ali");
-		userDao.create(user);
+	public void testExists() {
+		userDao.create(user1);
+		userDao.create(user2);
+		userDao.create(user3);
+		userDao.create(user4);
 		
-		List<User> users = userDao.getAllUsers();
-		
-		assertEquals("Only one user in list", 1, users.size());
-		assertTrue("User should exist in database", userDao.exists(user.getUsername()));
-		
-		assertEquals("Created user should be identical to retreived user", user, users.get(0));
-		
-		//List<User> empty = userDao.getAllUsers();
+		assertTrue("User should exist in database", userDao.exists(user2.getUsername()));
+		assertFalse("User should not exist in database", userDao.exists("notAUser"));
 	}
 }

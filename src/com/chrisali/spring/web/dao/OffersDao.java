@@ -2,68 +2,107 @@ package com.chrisali.spring.web.dao;
 
 import java.util.List;
 
-import javax.sql.DataSource;
-
+import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
+@Repository
 @Component("offersDao")
 public class OffersDao {
-	
-	private NamedParameterJdbcTemplate jdbc;
-	
 	@Autowired
-	public void setDataSource(DataSource jdbc) {
-		this.jdbc = new NamedParameterJdbcTemplate(jdbc);
-	}
+	private SessionFactory sessionFactory;
+	private Session session;
 	
-	public List<Offer> getOffers() {
-		return jdbc.query("select * from offers, users where offers.username=users.username", new OfferRowMapper());
-	}
-	
-	public List<Offer> getOffers(String username) {
-		MapSqlParameterSource params = new MapSqlParameterSource();
-		params.addValue("username", username);
+	public Session getSession() {
+		session = null;
 		
-		return jdbc.query("select * from offers, users where offers.username=users.username and offers.username=:username", params, new OfferRowMapper());
+		try {session = sessionFactory.getCurrentSession();} 
+		catch (HibernateException e) {session = sessionFactory.openSession();}
+		
+		return session;
+	}
+	
+	public void closeSession() {session.close();}
+	
+	@SuppressWarnings("unchecked")
+	public List<Offer> getOffers() {
+		Criteria criteria = getSession().createCriteria(Offer.class);
+		criteria.createAlias("user", "u").add(Restrictions.eq("u.enabled", true));
+		
+		return criteria.list();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Offer> getOffers(String username) {
+		Criteria criteria = getSession().createCriteria(Offer.class);
+		criteria.createAlias("user", "u");
+		criteria.add(Restrictions.eq("u.enabled", true));
+		criteria.add(Restrictions.eq("u.username", username));
+		
+		List<Offer> offers = criteria.list();
+		closeSession();
+		
+		return offers;
 	}
 	
 	public Offer getOffer(int id) {	
-		MapSqlParameterSource params = new MapSqlParameterSource();
-		params.addValue("id", id);
+		Criteria criteria = getSession().createCriteria(Offer.class);
+		criteria.createAlias("user", "u");
+		criteria.add(Restrictions.eq("u.enabled", true));
+		criteria.add(Restrictions.idEq(id));
 		
-		return jdbc.queryForObject("select * from offers, users where offers.username=users.username and users.enabled=true and id = :id", params, new OfferRowMapper());
+		Offer offer = (Offer)criteria.uniqueResult();
+		closeSession();
+		
+		return offer;
 	}
 	
-	public boolean update(Offer offer) {
-		BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(offer);
-		
-		return jdbc.update("update offers set text=:text where id=:id", params) == 1;
+	public void createOrUpdate(Offer offer) {
+		Transaction tx = null;
+		session = sessionFactory.openSession();
+		try {
+			tx = session.beginTransaction();
+			session.saveOrUpdate(offer);
+			session.flush();
+			tx.commit();
+		} catch (Exception e) {
+			if (tx != null)	tx.rollback();
+		} finally {
+			session.close();
+		}
 	}
 	
 	public boolean delete(int id) {
-		MapSqlParameterSource params = new MapSqlParameterSource();
-		params.addValue("id", id);
+		Query query = getSession().createQuery("delete from Offer where id=:id");
+		query.setLong("id", id);
 		
-		return jdbc.update("delete from offers where id=:id", params) == 1;
+		boolean isDeleted = (query.executeUpdate() == 1);
+		closeSession();
+		
+		return isDeleted;
 	}
 	
-	public boolean create(Offer offer) {
-		BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(offer);
-		
-		return jdbc.update("insert into offers (username, text) values (:username, :text)", params) == 1;
-	}
-	
-	@Transactional
-	public int[] create(List<Offer> offers) {
-		SqlParameterSource[] params = SqlParameterSourceUtils.createBatch(offers.toArray());
-		
-		return jdbc.batchUpdate("insert into offers (username, text) values (:username, :text)", params);
+	public void create(Offer offer) {
+		Transaction tx = null;
+		session = sessionFactory.openSession();
+		try {
+			tx = session.beginTransaction();
+			session.save(offer);
+			session.flush();
+			tx.commit();
+		} catch (Exception e) {
+			if (tx != null)	tx.rollback();
+		} finally {
+			session.close();
+		}
 	}
 }

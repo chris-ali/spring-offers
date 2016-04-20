@@ -1,13 +1,26 @@
 package com.chrisali.spring.web.dao;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+@Entity
+@Table(name="offers")
 public class Offer {
+	@Id
+	@GeneratedValue
 	private int id;
 	
+	@ManyToOne
+	@JoinColumn(name="username")
 	private User user;
 
-	@Size(min=20, max=255, message="Text must be between 20 and 255 characters")
+	@Size(min=20, max=255, message="Text must be between 20 and 255 characters", 
+			groups={PersistenceValidationGroup.class, FormValidationGroup.class})
 	private String text;
 
 	public Offer() {
