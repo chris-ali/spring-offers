@@ -3,6 +3,8 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="sf"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
+<h2>Create New Account</h2>
+
 <sf:form id="details" action="${pageContext.request.contextPath}/docreateaccount" method="post" commandName="user">
 	<table class="formtable">
 		<tr>

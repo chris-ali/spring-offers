@@ -4,11 +4,11 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <table class="offers">
-	<tr><td>Name</td><td>Email</td><td>Offer</td></tr>
+	<tr><td>Name</td><td>Username</td><td>Offer</td></tr>
 	<c:forEach var="offer" items="${offers}">
 		<tr>
 			<td><c:out value="${offer.user.name}"></c:out></td>
-			<td><c:out value="${offer.user.email}"></c:out></td>
+			<td><a href="<c:url value='/message?uid=${offer.username}' />">Contact</a></td>
 			<td><c:out value="${offer.text}"></c:out></td>
 		</tr>
 	</c:forEach>

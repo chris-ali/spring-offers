@@ -1,6 +1,8 @@
 package com.chrisali.spring.web.test.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.List;
 
@@ -15,6 +17,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.chrisali.spring.web.dao.Message;
+import com.chrisali.spring.web.dao.MessagesDao;
 import com.chrisali.spring.web.dao.Offer;
 import com.chrisali.spring.web.dao.OffersDao;
 import com.chrisali.spring.web.dao.User;
@@ -25,13 +29,16 @@ import com.chrisali.spring.web.dao.UserDao;
 									"classpath:com/chrisali/spring/web/container/security-context.xml",
 									"classpath:com/chrisali/spring/web/test/config/datasource.xml" })
 @RunWith(SpringJUnit4ClassRunner.class)
-public class OffersDaoTests {
+public class MessagesDaoTests {
 	
 	@Autowired
 	private OffersDao offersDao;
 	
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	private MessagesDao messagesDao;
 	
 	@Autowired
 	private DataSource dataSource;
@@ -55,6 +62,11 @@ public class OffersDaoTests {
 	private Offer offer6 = new Offer("This is just a test offer.", user3);
 	private Offer offer7 = new Offer("This is a test offer for a user that is not enabled.", user4);
 	
+	// Test Messages
+	private Message message1 = new Message("Test Subject1", "Test Content1", "Chris Ali", "chris@test.com", user1.getUsername());
+	private Message message2 = new Message("Test Subject2", "Test Content2", "Matt Ali", "matt@test.com", user2.getUsername());
+	private Message message3 = new Message("Test Subject3", "Test Content3", "Chris Ali", "chris@test.com", user3.getUsername());
+	
 	@Before
 	public void init() {
 		JdbcTemplate jdbc = new JdbcTemplate(dataSource);
@@ -62,6 +74,7 @@ public class OffersDaoTests {
 		jdbc.execute("delete from offers");
 		jdbc.execute("delete from messages");
 		jdbc.execute("delete from users");
+		
 	}
 	
 	private void setTestData() {
@@ -77,71 +90,41 @@ public class OffersDaoTests {
 		offersDao.createOrUpdate(offer5);
 		offersDao.createOrUpdate(offer6);
 		offersDao.createOrUpdate(offer7);
+		
+		messagesDao.createOrUpdate(message1);
+		messagesDao.createOrUpdate(message2);
+		messagesDao.createOrUpdate(message3);
 	}
 	
 	@Test
 	public void testCreateRetrieve() {
 		userDao.create(user1);
 		
-		offersDao.createOrUpdate(offer1);
+		messagesDao.createOrUpdate(message1);
 		
-		List<Offer> offers1 = offersDao.getOffers();
-		assertEquals("Number of offers should be 1", 1, offers1.size());
+		List<Message> messages = messagesDao.getMessages();
 		
-		assertEquals("Retrieved offer should equal inserted offer", offer1, offers1.get(0));
-		
-		setTestData();
-		
-		List<Offer> offers2 = offersDao.getOffers();
-		assertEquals("Number of offers from enabled users should be 6", 6, offers2.size());
+		assertEquals("Message in database should be equal", message1, messages.get(0));
+		assertEquals("Should be one message in database", 1, messages.size());
 	}
 	
 	@Test
-	public void testUpdate() {
+	public void testRetrieveById() {
 		setTestData();
 		
-		offer3.setText("This offer has updated text");
-		offersDao.createOrUpdate(offer3);
+		List<Message> messages = messagesDao.getMessages();
 		
-		Offer retrieved = offersDao.getOffer(offer3.getId());
-		assertEquals("Retrieved offer should be updated", offer3, retrieved);
-	}
-	
-	@Test
-	public void testGetUsername() {
-		setTestData();
+		for (Message message : messages) {
+			Message retrieved = messagesDao.getMessage(message.getId());
+			assertEquals("Retrieved message should be equal", message, retrieved);
+		}
 		
-		List<Offer> offers1 = offersDao.getOffers(user3.getUsername());
-		assertEquals("Should be 3 offers for user", 3, offers1.size());
+		Message toDelete = messages.get(1);
 		
-		List<Offer> offers2 = offersDao.getOffers("nobody");
-		assertEquals("Should be 0 offers for user", 0, offers2.size());
+		assertNotNull("Message not deleted yet", messagesDao.getMessage(toDelete.getId()));
 		
-		List<Offer> offers3 = offersDao.getOffers(user2.getUsername());
-		assertEquals("Should be 1 offer for user", 1, offers3.size());
-	}
-	
-	@Test
-	public void testDelete() {
-		setTestData();
+		messagesDao.delete(toDelete.getId());
 		
-		Offer retrieved1 = offersDao.getOffer(offer2.getId());
-		assertNotNull("Offer with ID " + retrieved1.getId() + " should not be null", retrieved1);
-		
-		offersDao.delete(offer2.getId());
-		
-		Offer retrieved2 = offersDao.getOffer(offer2.getId());
-		assertNull("Offer with ID " + retrieved1.getId() + " should be null", retrieved2);
-	}
-	
-	@Test
-	public void testGetById() {
-		setTestData();
-		
-		Offer retrieved1 = offersDao.getOffer(offer7.getId());
-		assertNull("Disabled user's offer should return null", retrieved1);
-		
-		Offer retrieved2 = offersDao.getOffer(offer1.getId());
-		assertEquals("Offers should match", offer1, retrieved2);
+		assertNull("Message was deleted", messagesDao.getMessage(toDelete.getId()));
 	}
 }

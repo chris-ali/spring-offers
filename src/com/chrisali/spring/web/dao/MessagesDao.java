@@ -16,8 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @Repository
-@Component("offersDao")
-public class OffersDao {
+@Component("messagesDao")
+public class MessagesDao {
 	@Autowired
 	private SessionFactory sessionFactory;
 	private Session session;
@@ -34,44 +34,39 @@ public class OffersDao {
 	public void closeSession() {session.close();}
 	
 	@SuppressWarnings("unchecked")
-	public List<Offer> getOffers() {
-		Criteria criteria = getSession().createCriteria(Offer.class);
-		criteria.createAlias("user", "u").add(Restrictions.eq("u.enabled", true));
+	public List<Message> getMessages() {
+		Criteria criteria = getSession().createCriteria(Message.class);
 		
 		return criteria.list();
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Offer> getOffers(String username) {
-		Criteria criteria = getSession().createCriteria(Offer.class);
-		criteria.createAlias("user", "u");
-		criteria.add(Restrictions.eq("u.enabled", true));
-		criteria.add(Restrictions.eq("u.username", username));
+	public List<Message> getMessages(String username) {
+		Criteria criteria = getSession().createCriteria(Message.class);
+		criteria.add(Restrictions.eq("username", username));
 		
-		List<Offer> offers = criteria.list();
+		List<Message> messages = criteria.list();
 		closeSession();
 		
-		return offers;
+		return messages;
 	}
 	
-	public Offer getOffer(int id) {	
-		Criteria criteria = getSession().createCriteria(Offer.class);
-		criteria.createAlias("user", "u");
-		criteria.add(Restrictions.eq("u.enabled", true));
+	public Message getMessage(int id) {	
+		Criteria criteria = getSession().createCriteria(Message.class);
 		criteria.add(Restrictions.idEq(id));
 		
-		Offer offer = (Offer)criteria.uniqueResult();
+		Message message = (Message)criteria.uniqueResult();
 		closeSession();
 		
-		return offer;
+		return message;
 	}
 	
-	public void createOrUpdate(Offer offer) {
+	public void createOrUpdate(Message message) {
 		Transaction tx = null;
 		session = sessionFactory.openSession();
 		try {
 			tx = session.beginTransaction();
-			session.saveOrUpdate(offer);
+			session.saveOrUpdate(message);
 			session.flush();
 			tx.commit();
 		} catch (Exception e) {
@@ -82,7 +77,7 @@ public class OffersDao {
 	}
 	
 	public boolean delete(int id) {
-		Query query = getSession().createQuery("delete from Offer where id=:id");
+		Query query = getSession().createQuery("delete from Message where id=:id");
 		query.setLong("id", id);
 		
 		boolean isDeleted = (query.executeUpdate() == 1);
