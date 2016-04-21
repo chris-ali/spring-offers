@@ -63,19 +63,11 @@ public class OffersDaoTests {
 		jdbc.execute("delete from users");
 	}
 	
-	@Test
-	public void testCreateRetrieve() {
+	private void setTestData() {
 		userDao.create(user1);
 		userDao.create(user2);
 		userDao.create(user3);
 		userDao.create(user4);
-		
-		offersDao.create(offer1);
-		
-		List<Offer> offers1 = offersDao.getOffers();
-		assertEquals("Number of offers should be 1", 1, offers1.size());
-		
-		assertEquals("Retrieved offer should equal inserted offer", offer1, offers1.get(0));
 		
 		offersDao.createOrUpdate(offer1);
 		offersDao.createOrUpdate(offer2);
@@ -84,6 +76,20 @@ public class OffersDaoTests {
 		offersDao.createOrUpdate(offer5);
 		offersDao.createOrUpdate(offer6);
 		offersDao.createOrUpdate(offer7);
+	}
+	
+	@Test
+	public void testCreateRetrieve() {
+		userDao.create(user1);
+		
+		offersDao.createOrUpdate(offer1);
+		
+		List<Offer> offers1 = offersDao.getOffers();
+		assertEquals("Number of offers should be 1", 1, offers1.size());
+		
+		assertEquals("Retrieved offer should equal inserted offer", offer1, offers1.get(0));
+		
+		setTestData();
 		
 		List<Offer> offers2 = offersDao.getOffers();
 		assertEquals("Number of offers from enabled users should be 6", 6, offers2.size());
@@ -91,18 +97,7 @@ public class OffersDaoTests {
 	
 	@Test
 	public void testUpdate() {
-		userDao.create(user1);
-		userDao.create(user2);
-		userDao.create(user3);
-		userDao.create(user4);
-		
-		offersDao.createOrUpdate(offer1);
-		offersDao.createOrUpdate(offer2);
-		offersDao.createOrUpdate(offer3);
-		offersDao.createOrUpdate(offer4);
-		offersDao.createOrUpdate(offer5);
-		offersDao.createOrUpdate(offer6);
-		offersDao.createOrUpdate(offer7);
+		setTestData();
 		
 		offer3.setText("This offer has updated text");
 		offersDao.createOrUpdate(offer3);
@@ -113,18 +108,7 @@ public class OffersDaoTests {
 	
 	@Test
 	public void testGetUsername() {
-		userDao.create(user1);
-		userDao.create(user2);
-		userDao.create(user3);
-		userDao.create(user4);
-		
-		offersDao.createOrUpdate(offer1);
-		offersDao.createOrUpdate(offer2);
-		offersDao.createOrUpdate(offer3);
-		offersDao.createOrUpdate(offer4);
-		offersDao.createOrUpdate(offer5);
-		offersDao.createOrUpdate(offer6);
-		offersDao.createOrUpdate(offer7);
+		setTestData();
 		
 		List<Offer> offers1 = offersDao.getOffers(user3.getUsername());
 		assertEquals("Should be 3 offers for user", 3, offers1.size());
@@ -138,19 +122,8 @@ public class OffersDaoTests {
 	
 	@Test
 	public void testDelete() {
-		userDao.create(user1);
-		userDao.create(user2);
-		userDao.create(user3);
-		userDao.create(user4);
+		setTestData();
 		
-		offersDao.createOrUpdate(offer1);
-		offersDao.createOrUpdate(offer2);
-		offersDao.createOrUpdate(offer3);
-		offersDao.createOrUpdate(offer4);
-		offersDao.createOrUpdate(offer5);
-		offersDao.createOrUpdate(offer6);
-		offersDao.createOrUpdate(offer7);
-
 		Offer retrieved1 = offersDao.getOffer(offer2.getId());
 		assertNotNull("Offer with ID " + retrieved1.getId() + " should not be null", retrieved1);
 		
@@ -162,18 +135,7 @@ public class OffersDaoTests {
 	
 	@Test
 	public void testGetById() {
-		userDao.create(user1);
-		userDao.create(user2);
-		userDao.create(user3);
-		userDao.create(user4);
-		
-		offersDao.createOrUpdate(offer1);
-		offersDao.createOrUpdate(offer2);
-		offersDao.createOrUpdate(offer3);
-		offersDao.createOrUpdate(offer4);
-		offersDao.createOrUpdate(offer5);
-		offersDao.createOrUpdate(offer6);
-		offersDao.createOrUpdate(offer7);
+		setTestData();
 		
 		Offer retrieved1 = offersDao.getOffer(offer7.getId());
 		assertNull("Disabled user's offer should return null", retrieved1);
