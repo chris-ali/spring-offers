@@ -37,4 +37,8 @@ public class UserService {
 		System.out.println(message);
 		messagesDao.createOrUpdate(message);
 	}
+	
+	public User getUser(String username) {
+		return userDao.getUser(username);
+	}
 }

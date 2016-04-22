@@ -53,14 +53,7 @@ public class UserDao {
 	}
 
 	public boolean exists(String username) {
-		Criteria criteria = getSession().createCriteria(User.class);
-		criteria.add(Restrictions.idEq(username));
-		User user = (User) criteria.uniqueResult();
-		
-		boolean exists = user != null;
-		closeSession();
-		
-		return exists;
+		return getUser(username) != null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -70,5 +63,15 @@ public class UserDao {
 		closeSession();
 				
 		return users;
+	}
+
+	public User getUser(String username) {
+		Criteria criteria = getSession().createCriteria(User.class);
+		criteria.add(Restrictions.idEq(username));
+		User user = (User) criteria.uniqueResult();
+		
+		closeSession();
+		
+		return user;
 	}
 }

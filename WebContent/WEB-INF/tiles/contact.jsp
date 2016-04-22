@@ -13,12 +13,12 @@
 	<table class="formtable">
 		<tr>
 			<td class="label">Your Name:</td>
-			<td><sf:input class="control" path="name" type="text" />
+			<td><sf:input class="control" path="name" type="text" value="${fromUserName}"/>
 			<div class="error"><sf:errors path="name" /></div></td>
 		</tr>
 		<tr>
 			<td class="label">Your Email:</td>
-			<td><sf:input class="control" path="email" type="text" />
+			<td><sf:input class="control" path="email" type="text" value="${fromUserEmail}" />
 			<div class="error"><sf:errors path="email" /></div></td>
 		</tr>
 		<tr>
