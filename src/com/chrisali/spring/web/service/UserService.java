@@ -34,11 +34,14 @@ public class UserService {
 	}
 	
 	public void sendMessage(Message message) {
-		System.out.println(message);
 		messagesDao.createOrUpdate(message);
 	}
 	
 	public User getUser(String username) {
 		return userDao.getUser(username);
+	}
+
+	public List<Message> getMessages(String username) {
+		return messagesDao.getMessages(username);
 	}
 }

@@ -1,6 +1,10 @@
 package com.chrisali.spring.web.controllers;
 
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -10,8 +14,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.chrisali.spring.web.dao.FormValidationGroup;
+import com.chrisali.spring.web.dao.Message;
 import com.chrisali.spring.web.dao.User;
 import com.chrisali.spring.web.service.UserService;
 
@@ -78,5 +84,29 @@ public class UserController {
 	@RequestMapping("/accessdenied")
 	public String showAccessDenied() {
 		return "accessdenied";
+	}
+	
+	@RequestMapping("/messages")
+	public String showMessages() {
+		return "messages";
+	}
+	
+	@RequestMapping(value="/getmessages", method=RequestMethod.GET, produces="application/json")
+	@ResponseBody
+	public Map<String, Object> getMessages(Principal principal) {
+		
+		List<Message> messages = null;
+		if (principal == null) {
+			messages = new ArrayList<>();
+		} else {
+			String username = principal.getName();
+			messages = userService.getMessages(username);
+		}
+		
+		Map<String, Object> data = new HashMap<>();
+		data.put("messages", messages);
+		data.put("number", messages.size());
+		
+		return data;
 	}
 }

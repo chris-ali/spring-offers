@@ -1,7 +1,6 @@
 package com.chrisali.spring.web.controllers;
 
 import java.security.Principal;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,15 +24,7 @@ public class OffersController {
 	public void setOffersService(OffersService offersService) {
 		this.offersService = offersService;
 	}
-	
-	@RequestMapping("/offers")
-	public String showOffers(Model model) {
-		List<Offer> offers = offersService.getCurrent();
-		model.addAttribute("offers", offers);
-		
-		return "offers";
-	}
-	
+
 	@RequestMapping("/createoffer")
 	public String createOffer(Model model, Principal principal) {
 		Offer offer = null;

@@ -14,15 +14,18 @@
 			<security:password-encoder ref="passwordEncoder"></security:password-encoder>
 		</security:authentication-provider>
 	</security:authentication-manager>
-
+	
 	<security:http use-expressions="true" access-denied-page="/accessdenied">
 		<security:intercept-url pattern="/admin" access="hasRole('ROLE_ADMIN')" />
 		<security:intercept-url pattern="/docreateoffer" access="isAuthenticated()" />
 		<security:intercept-url pattern="/createoffer" access="isAuthenticated()" />
 		<security:intercept-url pattern="/offercreated" access="isAuthenticated()" />
 		<security:intercept-url pattern="/offerdeleted" access="isAuthenticated()" />
+		<security:intercept-url pattern="/getmessages" access="isAuthenticated()" />
+		<security:intercept-url pattern="/messages" access="isAuthenticated()" />
 		<security:intercept-url pattern="/" access="permitAll" />
 		<security:intercept-url pattern="/message" access="permitAll" />
+		<security:intercept-url pattern="/getmessages" access="isAuthenticated()" />
 		<security:intercept-url pattern="/messagesent" access="permitAll" />
 		<security:intercept-url pattern="/accessdenied" access="permitAll" />
 		<security:intercept-url pattern="/createaccount" access="permitAll" />
@@ -30,10 +33,11 @@
 		<security:intercept-url pattern="/static/**" access="permitAll" />
 		<security:intercept-url pattern="/login" access="permitAll" />
 		<security:intercept-url pattern="/loggedout" access="permitAll" />
-		<security:intercept-url pattern="/offers" access="permitAll" />
 		<security:intercept-url pattern="/**" access="denyAll" />
 		
-		<security:form-login login-page="/login" authentication-failure-url="/login?error=true" />
+		<security:form-login login-page="/login"
+			authentication-failure-url="/login?error=true" default-target-url="/"
+			always-use-default-target="true" />
 		<security:logout logout-success-url="/loggedout" />
 		
 		<security:remember-me key="offersAppKey" user-service-ref="jdbcUserService" />

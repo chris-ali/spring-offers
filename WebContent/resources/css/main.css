@@ -53,7 +53,7 @@ p.error {
 table.offers {
 	padding: 20px;
 	border: 1px solid gray;
-	width: 800px;
+	width: 700px;
 }
 
 div.header {
@@ -62,6 +62,12 @@ div.header {
 	width: 100%;
 	height: 40px;
 	background-color: blue;
+}
+
+div.toolbar {
+	position: relative;
+	padding-left: 40px;
+	top: 10 px;
 }
 
 a.login {
@@ -99,4 +105,45 @@ div.footer {
 div.body {
 	position: relative;
 	padding: 40px;
+}
+
+table.offers td {
+	border-bottom: 1px dashed brown;
+}
+
+td.name {
+	width: 100px;
+	padding: 2px 10px;
+	vertical-align: top;
+}
+
+td.contact {
+	width: 80px;
+	padding: 2px 10px;
+	vertical-align: top;
+}
+
+.message {
+	margin-bottom: 20px;
+	border: 1px solid blue;
+}
+
+span.subject {
+	font-size: large;
+	font-weight: bold;
+	color: navy;
+	padding: 5px;
+}
+
+span.messageBody {
+	display: block;
+	padding: 5px;
+}
+
+span.name {
+	display: block;
+	font-style: italic;
+	color: navy;
+	font-size: medium;
+	padding: 5px;
 }

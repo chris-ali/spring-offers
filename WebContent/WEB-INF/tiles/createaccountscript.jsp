@@ -22,7 +22,6 @@
 		} else {
 			return true;
 		}
-		
 	}
 	
 	function checkMatchPasswords() {

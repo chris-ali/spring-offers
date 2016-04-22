@@ -17,6 +17,10 @@
 			<tiles:insertAttribute name="header" />
 		</div>
 		
+		<div class="toolbar">
+			<tiles:insertAttribute name="toolbar" />
+		</div>
+		
 		<div class="body">
 			<tiles:insertAttribute name="body" />
 		</div>

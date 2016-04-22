@@ -4,21 +4,11 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <table class="offers">
-	<tr><td>Name</td><td>Username</td><td>Offer</td></tr>
 	<c:forEach var="offer" items="${offers}">
 		<tr>
-			<td><c:out value="${offer.user.name}"></c:out></td>
-			<td><a href="<c:url value='/message?uid=${offer.username}' />">Contact</a></td>
-			<td><c:out value="${offer.text}"></c:out></td>
+			<td class="name"><c:out value="${offer.user.name}"></c:out></td>
+			<td class="contact"><a href="<c:url value='/message?uid=${offer.username}' />">Contact</a></td>
+			<td class="text"><c:out value="${offer.text}"></c:out></td>
 		</tr>
 	</c:forEach>
 </table>
-
-<c:choose>
-	<c:when test="${hasOffer}">
-		<p><a href="${pageContext.request.contextPath}/createoffer">Edit or Delete your current offer</a></p>
-	</c:when>
-	<c:otherwise>
-		<p><a href="${pageContext.request.contextPath}/createoffer">Create an offer</a></p>
-	</c:otherwise>
-</c:choose>
