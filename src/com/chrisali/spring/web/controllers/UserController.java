@@ -8,10 +8,13 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,6 +28,9 @@ import com.chrisali.spring.web.service.UserService;
 public class UserController {
 	
 	private UserService userService;
+	
+	@Autowired
+	private MailSender mailSender;
 	
 	@Autowired
 	public void setUserService(UserService userService) {
@@ -108,5 +114,32 @@ public class UserController {
 		data.put("number", messages.size());
 		
 		return data;
+	}
+	
+	@RequestMapping(value="/sendmessage", method=RequestMethod.POST, produces="application/json")
+	@ResponseBody
+	public Map<String, Object> sendMessage(Principal principal, @RequestBody Map<String, Object> data) {
+		String name = (String)data.get("name");
+		String email = (String)data.get("email");
+		String text = (String)data.get("text");
+		Integer target = (Integer)data.get("target");
+		
+		SimpleMailMessage mail = new SimpleMailMessage();
+		mail.setFrom("offers.donotreply@gmail.com");
+		mail.setTo(email);
+		mail.setSubject("Offers: You have a new message from " + name);
+		mail.setText(text);
+		
+		Map<String, Object> returnVal = new HashMap<>();
+		returnVal.put("success", true);
+		returnVal.put("target", target);
+		
+		try {mailSender.send(mail);}
+		catch (Exception e) {
+			e.printStackTrace();
+			returnVal.put("success", false);
+		}
+		
+		return returnVal;
 	}
 }

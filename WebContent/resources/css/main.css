@@ -147,3 +147,29 @@ span.name {
 	font-size: medium;
 	padding: 5px;
 }
+
+form.replyform {
+	padding: 10px;
+	display: none;
+}
+
+input.replybutton {
+	display: block;
+	margin-top: 10px;
+}
+
+textarea.replyarea {
+	width: 500px;
+	height: 150px;
+}
+
+a.replylink:link {
+	color: navy;
+}
+
+span.alertspan {
+	display: block;
+	font-weight: bold;
+	color: green;
+	margin-left: 10px;
+}
